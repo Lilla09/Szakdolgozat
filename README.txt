@@ -1,0 +1,1 @@
+Szoboszlai Lilla, Szakdolgozatához tartozó, Gráf izomorfizmus weboldalának, fejlesztése
