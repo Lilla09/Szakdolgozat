@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráf Izomorfizmus</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Gráfizomorfizmus</h1>
+        <span class="info-link" onclick="openInfo()">Info</span>
+    </header>
+
+    <main class="menu-container" id="main-menu">
+        <button class="menu-btn" onclick="openSection('rajzolo')">Gráfok rajzolása</button>
+        <button class="menu-btn" onclick="openSection('izomorf')">Izomorf-e?</button>
+    </main>
+
+    <section id="rajzolo-page" style="display:none;">
+        <button onclick="backToMenu()">Vissza</button>
+        <div id="cy"></div>
+    </section>
+
+    <div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeInfo()">&times;</span>
+        <h2>Használati útmutató</h2>
+        <div class="info-text">
+            <p><strong>Gráfok rajzolása:</strong> Leírás arról mit csinál ez a pont.</p>
+            <p><strong>Izomorf-e?:</strong> Ez meg a másik.</p>
+            </div>
+    </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
