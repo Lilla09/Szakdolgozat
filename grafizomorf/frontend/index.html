@@ -29,13 +29,20 @@
  <section id="rajzolo-page" style="display:none;">
     
     <div class="toolbar">
-        <button id="add-node-btn" onclick="setMode('add-node')">Csúcs felvétele</button>
-        <button id="add-edge-btn" onclick="setMode('add-edge')">Él felvétele</button>
-        <button id="delete-btn" onclick="setMode('delete')">Törlés</button>
-        <button onclick="clearGraph()">Teljes törlés</button>
-    </div>
-
-    <div id="cy"></div>
+    <button id="btn-node" class="tool-btn" onclick="setMode('node')">Csúcs felvétele</button>
+    <button id="btn-edge" class="tool-btn" onclick="setMode('edge')">Él felvétele</button>
+    <button id="btn-delete" class="tool-btn" onclick="setMode('delete')">Törlés</button>
+    <button class="tool-btn clear-all" onclick="fullClear()">Teljes törlés</button>
+</div>
+    <div class="workspace">
+            <div class="graph-box">
+                <div class="label">"A" Gráf</div>
+                <div id="cy1"></div>
+            </div>
+            <div class="graph-box">
+                <div class="label">"B" Gráf</div>
+                <div id="cy2"></div>
+            </div>
 </section>
 
     <div id="infoModal" class="modal">
@@ -50,7 +57,6 @@
     </div>
 
     <script src="../backend/graph.js"></script>
-    <script src="editor.js"></script>
     <script src="ui.js"></script> 
 </body>
 </html>

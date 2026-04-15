@@ -46,6 +46,26 @@ body {
     height: 70vh;
     gap: 80px;
 }
+/* Munkafelület elrendezése */
+.workspace {
+    display: flex;
+    height: 75vh;
+    gap: 10px;
+    padding: 10px;
+}
+
+.graph-box {
+    flex: 1; /* Ez felezi el a teret */
+    background: white;
+    border: 2px solid #ccc;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.label { background: #ccc; text-align: center; padding: 5px; font-weight: bold; color: #461f50; }
+
+#cy1, #cy2 { flex-grow: 1; width: 100%; }
 
 .menu-btn {
     background-color: #461f50;
@@ -123,19 +143,15 @@ body {
     flex-wrap: wrap;
 }
 
-.toolbar button {
+.tool-btn {
     padding: 8px 14px;
     cursor: pointer;
     border-radius: 10px;
 }
 
-.active-mode {
+.tool-btn.active {
     background-color: #4f0348;
     color: white;
     border: none;
 }
 
-#mode-indicator {
-    font-weight: bold;
-    margin: 8px 0;
-}
