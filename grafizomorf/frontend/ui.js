@@ -4,6 +4,10 @@ let sourceNode = null; // Élbehúzáshoz az első kijelölt pont
 let nodeCountA = 1; // Csúcsok egyedi azonosítóinak számlálója
 let nodeCountB = 1;
 
+let graphA = new Graph();
+let graphB = new Graph();
+
+
 function openSection(type) {
     document.getElementById('main-menu').style.display = 'none';
     const backBtn = document.getElementById('header-back-btn');
@@ -34,6 +38,8 @@ function setMode(newMode) {
 }
 
 function createGraph(containerId, nodeColor, edgeColor, counterPrefix) {
+    // Kiválasztjuk, melyik matematikai objektum tartozik ehhez a nézethez
+    let currentGraphModel = (counterPrefix === 'A') ? graphA : graphB;
     let cy = cytoscape({
         container: document.getElementById(containerId),
         style: [
@@ -79,11 +85,14 @@ cy.on('tap', function(evt) {
                     nodeCountB++;
                 }
 
+                // 1. Vizuális hozzáadás (Cytoscape)
                 cy.add({
                     group: 'nodes',
                     data: { id: currentId },
                     position: { x: evt.position.x, y: evt.position.y }
                 });
+                // 2. MATEMATIKAI hozzáadás (Graph osztály)
+                currentGraphModel.addVertex(currentId);
             }
             // Resetelés üres területre kattintva
             sourceNode = null;
@@ -93,7 +102,18 @@ cy.on('tap', function(evt) {
         // 2. Csúcsra vagy élre kattintás
         else {
             if (mode === 'delete') {
-                cy.remove(target); // Egy elem törlése
+                const id = target.id();
+                
+                if (target.isNode()) {
+                    // MATEMATIKAI törlés az új függvénnyel
+                    currentGraphModel.removeVertex(id);
+                    } else {
+                        // MATEMATIKAI törlés (él esetén kiolvassuk a forrást és a célt)
+                        const s = target.data('source');
+                        const t = target.data('target');
+                        currentGraphModel.removeEdge(s, t);
+                    }
+                    cy.remove(target); // Egy elem törlése
             } 
             else if (mode === 'edge' && target.isNode()) {
                 if (!sourceNode) {
@@ -108,6 +128,9 @@ cy.on('tap', function(evt) {
                                 target: target.id() 
                             }
                         });
+                        // Megnézzük, melyik gráfban vagyunk, és hozzáadjuk az élet a Map-hez is
+                        let currentGraphModel = (counterPrefix === 'A') ? graphA : graphB;
+                        currentGraphModel.addEdge(sourceNode.id(), target.id());
                     }
                     sourceNode = null;
                     setTimeout(() => {
@@ -147,6 +170,46 @@ function closeInfo() {
     document.getElementById('infoModal').style.display = 'none';
 }
 
+function openResult() {
+    document.getElementById('resultModal').style.display = 'block';
+    document.getElementById('check-list').innerHTML = ''; // Ablak ürítése indításkor
+    document.getElementById('final-verdict').innerHTML = '';
+}
+
+function closeResult() {
+    document.getElementById('resultModal').style.display = 'none';
+}
+
+// Ezt a függvényt fogják hívni az ellenőrzéseid
+function addCheckResult(text, isSuccess) {
+    const list = document.getElementById('check-list');
+    const icon = isSuccess ? "✅" : "❌";
+    const color = isSuccess ? "green" : "red";
+    
+    list.innerHTML += `<li style="color: ${color}">${icon} ${text}</li>`;
+}
+
+// A gomb által meghívott fő függvény
+function checkIsomorphism() {
+    openResult(); // Ablak megnyitása és ürítése
+    
+    // Sorban futtatjuk az ellenőrzéseket
+    // A '&&' miatt ha az egyik false, a többi le sem fut (láncolt ellenőrzés)
+    const isPotentiallyIsomorphic = checkVertexCount() && 
+                                    checkEdgeCount() && 
+                                    checkComponentCount();
+                                    // Ide jön majd a többi: && checkDegrees() && checkMainAlgorithm()
+
+    // Végső ítélet megjelenítése az ablak alján
+    const verdictElement = document.getElementById('final-verdict');
+    if (isPotentiallyIsomorphic) {
+        verdictElement.innerHTML = "EREDMÉNY: LEHETSÉGESEN IZOMORF";
+        verdictElement.className = "result-success";
+    } else {
+        verdictElement.innerHTML = "EREDMÉNY: NEM IZOMORF";
+        verdictElement.className = "result-error";
+    }
+}
 // Bezárás, ha a felhasználó a szürke háttérre kattint (nem a dobozra)
 window.onclick = function(event) {
     let modal = document.getElementById('infoModal');
@@ -154,3 +217,4 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
