@@ -107,28 +107,76 @@ class Graph {
     }
     return count;
 }
+// graph.js - add a Graph osztályhoz
 
-   /* // EZ A KULCS: Átalakítja a belső listát a Cytoscape.js által várt formátumra
-    toCytoscapeElements() {
-        let elements = [];
-        
-        // Csúcsok hozzáadása
-        for (let vertex of this.adjacencyList.keys()) {
-            elements.push({ data: { id: vertex, label: vertex } });
-        }
-        
-        // Élek hozzáadása (figyelve, hogy ne duplázzunk)
-        let visitedEdges = new Set();
-        for (let [v1, neighbors] of this.adjacencyList) {
-            for (let v2 of neighbors) {
-                let edgeId = [v1, v2].sort().join('-');
-                if (!visitedEdges.has(edgeId)) {
-                    elements.push({ data: { id: edgeId, source: v1, target: v2 } });
-                    visitedEdges.add(edgeId);
+getEccentricitySequence() {
+    const eccentricities = [];
+    const vertices = Array.from(this.adjacencyList.keys());
+
+    for (let startNode of vertices) {
+        let maxDist = 0;
+        const distances = new Map();
+        const queue = [[startNode, 0]];
+        distances.set(startNode, 0);
+
+        // BFS (Szélességi keresés) a távolságok mérésére
+        while (queue.length > 0) {
+            const [current, dist] = queue.shift();
+            maxDist = Math.max(maxDist, dist);
+
+            const neighbors = this.adjacencyList.get(current) || [];
+            for (let neighbor of neighbors) {
+                if (!distances.has(neighbor)) {
+                    distances.set(neighbor, dist + 1);
+                    queue.push([neighbor, dist + 1]);
                 }
             }
         }
-        return elements;
+        
+        // Ha a gráf nem összefüggő, a nem elérhető csúcsok távolsága 
+        // matematikailag végtelen, de itt a komponensen belüli maxot vesszük.
+        eccentricities.push(maxDist);
     }
-*/
+
+    // Sorba rendezzük a könnyű összehasonlításhoz (csökkenő)
+    return eccentricities.sort((a, b) => b - a);
+}
+
+// graph.js
+
+getAdvancedDegreeSignature(maxDegreeGlobal) {
+    const allSignatures = [];
+    const vertices = Array.from(this.adjacencyList.keys());
+
+    for (let v of vertices) {
+        const ownDegree = this.getDegree(v);
+        const neighbors = this.adjacencyList.get(v) || [];
+        
+        // Létrehozunk egy listát: [saját_fok, 1_fokú_szomszédok, 2_fokú_szomszédok, ...]
+        // A hossza maxDegreeGlobal + 1 lesz (a 0. index a saját fokszám)
+        let signature = new Array(maxDegreeGlobal + 1).fill(0);
+        
+        signature[0] = ownDegree; // Első elem a saját fokszám
+
+        // Megszámoljuk a szomszédok fokszámait
+        for (let neighborId of neighbors) {
+            const nDegree = this.getDegree(neighborId);
+            // Ha a szomszéd fokszáma nDegree, akkor a signature[nDegree] helyen növeljük
+            // (Mivel a signature[0] a saját fok, a szomszédokat a fokszámuknak megfelelő indexre tesszük)
+            // Megjegyzés: Ha a 2. elem az 1-fokú szomszéd, akkor az index eltolás: signature[nDegree]
+            if (nDegree <= maxDegreeGlobal) {
+                signature[nDegree]++;
+            }
+        }
+        allSignatures.push(signature);
+    }
+
+    // Lexikografikus rendezés: [3, 1, 0, 2] előrébb van mint [3, 1, 1, 0]
+    return allSignatures.sort((a, b) => {
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return a[i] - b[i];
+        }
+        return 0;
+    });
+}
 }

@@ -120,18 +120,34 @@ cy.on('tap', function(evt) {
                     sourceNode = target;
                     target.select();
                 } else {
-                    if (sourceNode.id() !== target.id()) {
-                        cy.add({
-                            group: 'edges',
-                            data: { 
-                                source: sourceNode.id(), 
-                                target: target.id() 
-                            }
-                        });
-                        // Megnézzük, melyik gráfban vagyunk, és hozzáadjuk az élet a Map-hez is
+                    const sourceId = sourceNode.id();
+                    const targetId = target.id();
+
+                    if (sourceId !== targetId) {
+                        // 1. Megkeressük, melyik matematikai modellhez tartozik
                         let currentGraphModel = (counterPrefix === 'A') ? graphA : graphB;
-                        currentGraphModel.addEdge(sourceNode.id(), target.id());
+
+                        // 2. ELŐSZÖR a matematikát próbáljuk meg frissíteni
+                        // Az addEdge true-t ad, ha még nincs ott az él, és false-t, ha már létezik
+                        const sikerult = currentGraphModel.addEdge(sourceId, targetId);
+
+                        if (sikerult) {
+                            // 3. CSAK AKKOR rajzoljuk le, ha a matematika engedte
+                            cy.add({
+                                group: 'edges',
+                                data: { 
+                                    // Egyedi ID-t adunk az élnek, hogy később könnyebben törölhető legyen
+                                    id: [sourceId, targetId].sort().join('-'),
+                                    source: sourceId, 
+                                    target: targetId 
+                                }
+                            });
+                        } else {
+                            console.log("Ez az él már létezik, nem rajzolom le újra.");
+                        }
                     }
+                    
+                    // Resetelés mindenképpen
                     sourceNode = null;
                     setTimeout(() => {
                         cy.elements().unselect();
@@ -197,7 +213,10 @@ function checkIsomorphism() {
     // A '&&' miatt ha az egyik false, a többi le sem fut (láncolt ellenőrzés)
     const isPotentiallyIsomorphic = checkVertexCount() && 
                                     checkEdgeCount() && 
-                                    checkComponentCount();
+                                    checkComponentCount()&&
+                                    checkDegreeSequence()&&
+                                    checkEccentricitySequence()&&
+                                    checkAdvancedSignature();
                                     // Ide jön majd a többi: && checkDegrees() && checkMainAlgorithm()
 
     // Végső ítélet megjelenítése az ablak alján
