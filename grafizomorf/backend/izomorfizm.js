@@ -69,11 +69,11 @@ function checkEccentricitySequence() {
     const strB = eccB.length > 0 ? eccB.join(', ') : "üres";
 
     if (identical) {
-        addCheckResult(`Excentricitás-sorozat egyezik: (A: [${strA}], B: [${strB}])`, true);
+        addCheckResult(`Átmérő-sorozat egyezik: (A: [${strA}], B: [${strB}])`, true);
         return true;
     } else {
         // Itt látszani fog, ha a listák hossza vagy elemei eltérnek
-        addCheckResult(`Excentricitás-sorozat eltér! (A: [${strA}], B: [${strB}])`, false);
+        addCheckResult(`Átmérő-sorozat eltér! (A: [${strA}], B: [${strB}])`, false);
         return false;
     }
 }
@@ -114,5 +114,91 @@ function checkAdvancedSignature() {
         );
         return false;
     }
+}
 
+
+    // Segédfüggvény a permutációk generálásához
+    function getPermutations(array) {
+        let res = [];
+        function helper(arr, m = []) {
+            if (arr.length === 0) res.push(m);
+            else {
+                for (let i = 0; i < arr.length; i++) {
+                    let curr = arr.slice();
+                    let next = curr.splice(i, 1);
+                    helper(curr.slice(), m.concat(next));
+                }
+            }
+        }
+        helper(array);
+        return res;
+    }
+
+
+function isIsomorphicOptimized(g1, g2) {
+    const nodes1 = Array.from(g1.adjacencyList.keys());
+    const nodes2 = Array.from(g2.adjacencyList.keys());
+    const n = nodes1.length;
+
+    if (n === 0) return {};
+
+    // 1. Ujjlenyomatok lekérése minden csúcshoz
+    const degSeqA = g1.getDegreeSequence();
+    const degSeqB = g2.getDegreeSequence();
+    const globalMax = Math.max(0, ...degSeqA, ...degSeqB);
+
+    // Készítünk egy segédfüggvényt, ami egy csúcs ujjlenyomatát stringgé alakítja
+    const getSig = (graph, v) => JSON.stringify(graph.getVertexSignature(v, globalMax));
+
+    // Előre kiszámoljuk az ujjlenyomatokat, hogy ne a ciklusban kelljen
+    const sigs1 = new Map(nodes1.map(v => [v, getSig(g1, v)]));
+    const sigs2 = new Map(nodes2.map(v => [v, getSig(g2, v)]));
+
+    let mapping = new Map();
+    let usedInG2 = new Set();
+
+    // 2. Visszalépéses keresés (Backtracking)
+    function backtrack(index) {
+        if (index === n) return true; // Minden csúcsot sikerült párosítani!
+
+        const u = nodes1[index];
+        const sigU = sigs1.get(u);
+
+        for (const v of nodes2) {
+            // OPTIMALIZÁLÁS: Csak akkor próbáljuk meg, ha:
+            // - v még nincs használva
+            // - v ujjlenyomata megegyezik u ujjlenyomatával
+            if (!usedInG2.has(v) && sigs2.get(v) === sigU) {
+                
+                // Ellenőrizzük az éleket a már leképezett csúcsokkal (Adjacency check)
+                let canMap = true;
+                for (let i = 0; i < index; i++) {
+                    const prevU = nodes1[i];
+                    const prevV = mapping.get(prevU);
+                    
+                    const edgeInG1 = g1.adjacencyList.get(u).includes(prevU);
+                    const edgeInG2 = g2.adjacencyList.get(v).includes(prevV);
+                    
+                    if (edgeInG1 !== edgeInG2) {
+                        canMap = false;
+                        break;
+                    }
+                }
+
+                if (canMap) {
+                    mapping.set(u, v);
+                    usedInG2.add(v);
+                    
+                    if (backtrack(index + 1)) return true;
+                    
+                    // Visszalépés (Undo)
+                    usedInG2.delete(v);
+                    mapping.delete(u);
+                }
+            }
+        }
+        return false;
+    }
+
+    return backtrack(0) ? Object.fromEntries(mapping) : null;
 }

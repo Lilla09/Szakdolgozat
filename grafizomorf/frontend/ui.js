@@ -163,11 +163,26 @@ cy.on('tap', function(evt) {
 // Teljes törlés funkció
 function fullClear() {
     if (confirm("Biztosan törölni akarod mindkét gráfot?")) {
+        // 1. Vizuális törlés (Cytoscape)
         if (cy1) cy1.elements().remove();
         if (cy2) cy2.elements().remove();
-        setMode(null); // Törlés után ne maradjon semmilyen rajzoló mód aktív
+
+        // 2. MATEMATIKAI törlés (A Graph osztály clear metódusával)
+        graphA.clear();
+        graphB.clear();
+
+        // 3. Számlálók alaphelyzetbe állítása
+        // Így a következő pont megint A1 és B1 lesz, nem pedig ott folytatódik, ahol abbahagytad
+        nodeCountA = 1;
+        nodeCountB = 1;
+
+        // 4. Mód alaphelyzetbe állítása
+        setMode(null);
+        
+        console.log("Minden adat törölve: Vizualizáció, Matematikai modell és Számlálók.");
     }
 }
+
 function backToMenu() {
     document.getElementById('main-menu').style.display = 'flex';
     document.getElementById('rajzolo-page').style.display = 'none';
@@ -205,35 +220,60 @@ function addCheckResult(text, isSuccess) {
     list.innerHTML += `<li style="color: ${color}">${icon} ${text}</li>`;
 }
 
-// A gomb által meghívott fő függvény
 function checkIsomorphism() {
-    openResult(); // Ablak megnyitása és ürítése
-    
-    // Sorban futtatjuk az ellenőrzéseket
-    // A '&&' miatt ha az egyik false, a többi le sem fut (láncolt ellenőrzés)
-    const isPotentiallyIsomorphic = checkVertexCount() && 
-                                    checkEdgeCount() && 
-                                    checkComponentCount()&&
-                                    checkDegreeSequence()&&
-                                    checkEccentricitySequence()&&
-                                    checkAdvancedSignature();
-                                    // Ide jön majd a többi: && checkDegrees() && checkMainAlgorithm()
+    openResult();
+    const isPotentiallyIsomorphic = 
+        checkVertexCount() && 
+        checkEdgeCount() && 
+        checkComponentCount() &&
+        checkDegreeSequence() &&
+        checkEccentricitySequence() &&
+        checkAdvancedSignature();
 
-    // Végső ítélet megjelenítése az ablak alján
     const verdictElement = document.getElementById('final-verdict');
+    const bruteContainer = document.getElementById('brute-force-container');
+
     if (isPotentiallyIsomorphic) {
         verdictElement.innerHTML = "EREDMÉNY: LEHETSÉGESEN IZOMORF";
         verdictElement.className = "result-success";
+        bruteContainer.style.display = "block"; // Megmutatjuk a gombot
     } else {
         verdictElement.innerHTML = "EREDMÉNY: NEM IZOMORF";
         verdictElement.className = "result-error";
-    }
-}
-// Bezárás, ha a felhasználó a szürke háttérre kattint (nem a dobozra)
-window.onclick = function(event) {
-    let modal = document.getElementById('infoModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
+        bruteContainer.style.display = "none";
     }
 }
 
+function startBruteForce() {
+    const verdictElement = document.getElementById('final-verdict');
+    if (!verdictElement) return;
+
+    verdictElement.innerHTML = "Számítás folyamatban...";
+    verdictElement.className = ""; // Alaphelyzetbe állítjuk a színt
+
+    // Kicsit várunk, hogy a böngésző ki tudja írni a szöveget
+    setTimeout(() => {
+        const mapping = isIsomorphicOptimized(graphA, graphB);
+        
+        // Elrejtjük a gombot, miután lefutott
+        const btnContainer = document.getElementById('brute-force-container');
+        if (btnContainer) btnContainer.style.display = "none";
+
+        if (mapping === undefined) {
+            verdictElement.innerHTML = "HIBA TÖRTÉNT A SZÁMÍTÁSKOR ⚠️";
+            verdictElement.className = "result-error";
+        } else if (mapping) {
+            verdictElement.innerHTML = "EREDMÉNY: BIZTOSAN IZOMORF ✅";
+            verdictElement.className = "result-success";
+            
+            let mappingStr = Object.entries(mapping)
+                .map(([a, b]) => `<strong>${a}</strong>→${b}`)
+                .join(', ');
+            addCheckResult(`Brute Force sikeres leképezés: ${mappingStr}`, true);
+        } else {
+            verdictElement.innerHTML = "EREDMÉNY: BIZTOSAN NEM IZOMORF ❌";
+            verdictElement.className = "result-error";
+            addCheckResult("Brute Force: Minden lehetőséget kipróbáltam, nem egyeznek.", false);
+        }
+    }, 150);
+}

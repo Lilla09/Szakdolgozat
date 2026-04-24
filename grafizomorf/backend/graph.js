@@ -179,4 +179,14 @@ getAdvancedDegreeSignature(maxDegreeGlobal) {
         return 0;
     });
 }
+
+getVertexSignature(v, maxDegree) {
+    let signature = new Array(maxDegree + 1).fill(0);
+    signature[0] = this.getDegree(v);
+    const neighbors = this.adjacencyList.get(v) || [];
+    for (let n of neighbors) {
+        signature[this.getDegree(n)]++;
+    }
+    return signature;
+}
 }
