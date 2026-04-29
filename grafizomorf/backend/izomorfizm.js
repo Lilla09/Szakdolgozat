@@ -38,7 +38,34 @@ function checkComponentCount() {
         return false;
     }
 }
-// 4. Rendezett fokszámsorozat összehasonlítása
+// 3. ELLENŐRZÉS: Komplementer élek száma
+function checkComplementEdgeCount() {
+    const ceA = complementA.size;
+    const ceB = complementB.size;
+
+    if (ceA === ceB) {
+        addCheckResult(`Komplementer élek száma egyezik (${ceA})`, true);
+        return true;
+    } else {
+        addCheckResult(`Komplementer élek száma eltér (A: ${ceA}, B: ${ceB})`, false);
+        return false;
+    }
+}
+
+// 4. ELLENŐRZÉS: Komplementer komponensek száma
+function checkComplementComponentCount() {
+    const ccA = complementA.getComponentCount();
+    const ccB = complementB.getComponentCount();
+
+    if (ccA === ccB) {
+        addCheckResult(`Komplementer komponensek száma egyezik (${ccA})`, true);
+        return true;
+    } else {
+        addCheckResult(`Komplementer komponensek száma eltér (A: ${ccA}, B: ${ccB})`, false);
+        return false;
+    }
+}
+// 5. Rendezett fokszámsorozat összehasonlítása
 function checkDegreeSequence() {
     const seqA = graphA.getDegreeSequence();
     const seqB = graphB.getDegreeSequence();
@@ -49,15 +76,15 @@ function checkDegreeSequence() {
 
     // Tömbök összehasonlítása JS-ben legegyszerűbben stringként vagy JSON-ként
     if (JSON.stringify(seqA) === JSON.stringify(seqB)) {
-        addCheckResult(`Fokszámsorozat egyezik: (A: [${strA}], B: [${strB}])`, true);
+        addCheckResult(`Fokszámsorozat egyezik:<br>` + `<strong>A:</strong> <small>${strA}</small><br>` + `<strong>B:</strong> <small>${strB}</small>`, true);
         return true;
     } else {
-        addCheckResult(`Fokszámsorozat eltér (A: [${strA}], B: [${strB}])`, false);
+        addCheckResult(`Fokszámsorozat eltér<br>` + `<strong>A:</strong> <small>${strA}</small><br>` + `<strong>B:</strong> <small>${strB}</small>`, false);
         return false;
     }
 }
 
-// 4. gráfátmérő sorozat
+// 6. gráfátmérő sorozat
 function checkEccentricitySequence() {
     const eccA = graphA.getEccentricitySequence(); // pl. [4, 3, 3, 2]
     const eccB = graphB.getEccentricitySequence(); // pl. [4, 3, 3, 2]
@@ -69,16 +96,18 @@ function checkEccentricitySequence() {
     const strB = eccB.length > 0 ? eccB.join(', ') : "üres";
 
     if (identical) {
-        addCheckResult(`Átmérő-sorozat egyezik: (A: [${strA}], B: [${strB}])`, true);
+        addCheckResult(`Átmérő-sorozat egyezik:<br>` + `<strong>A:</strong> <small>${strA}</small><br>` +
+            `<strong>B:</strong> <small>${strB}</small>`, true);
         return true;
     } else {
         // Itt látszani fog, ha a listák hossza vagy elemei eltérnek
-        addCheckResult(`Átmérő-sorozat eltér! (A: [${strA}], B: [${strB}])`, false);
+        addCheckResult(`Átmérő-sorozat eltér!` + `<strong>A:</strong> <small>${strA}</small><br>` +
+            `<strong>B:</strong> <small>${strB}</small>`, false);
         return false;
     }
 }
 
-//5. szomszédsági fokszám-eloszlás
+// 7. szomszédsági fokszám-eloszlás
 
 function checkAdvancedSignature() {
     // 1. Globális maximum fokszám meghatározása
@@ -134,7 +163,7 @@ function checkAdvancedSignature() {
         return res;
     }
 
-
+//végső ellenörzés: visszalépéses keresés a lehetséges leképezések között
 function isIsomorphicOptimized(g1, g2) {
     const nodes1 = Array.from(g1.adjacencyList.keys());
     const nodes2 = Array.from(g2.adjacencyList.keys());
@@ -202,3 +231,4 @@ function isIsomorphicOptimized(g1, g2) {
 
     return backtrack(0) ? Object.fromEntries(mapping) : null;
 }
+

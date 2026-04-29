@@ -189,4 +189,26 @@ getVertexSignature(v, maxDegree) {
     }
     return signature;
 }
+
+getComplement() {
+    const complement = new Graph();
+    const vertices = Array.from(this.adjacencyList.keys());
+
+    // 1. Minden csúcsot átmásolunk
+    vertices.forEach(v => complement.addVertex(v));
+
+    // 2. Végigmegyünk minden lehetséges csúcspáron
+    for (let i = 0; i < vertices.length; i++) {
+        for (let j = i + 1; j < vertices.length; j++) {
+            const v1 = vertices[i];
+            const v2 = vertices[j];
+
+            // Ha az eredetiben NINCS él, akkor a komplementerbe BEALAKJUK
+            if (!this.adjacencyList.get(v1).includes(v2)) {
+                complement.addEdge(v1, v2);
+            }
+        }
+    }
+    return complement;
+}
 }

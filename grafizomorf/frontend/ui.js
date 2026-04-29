@@ -6,7 +6,9 @@ let nodeCountB = 1;
 
 let graphA = new Graph();
 let graphB = new Graph();
-
+//komplemenet gráfok tárolására szolgáló változók
+let complementA = null;
+let complementB = null;
 
 function openSection(type) {
     document.getElementById('main-menu').style.display = 'none';
@@ -160,6 +162,17 @@ cy.on('tap', function(evt) {
     return cy;
 }
 
+function generateComplements() {
+    complementA = graphA.getComplement();
+    complementB = graphB.getComplement();
+    
+    // Opcionális: Kiírhatjuk a konzolra, hogy lássuk az eredményt
+    console.log("Komplementer A éleinek száma:", complementA.size);
+    console.log("Komplementer B éleinek száma:", complementB.size);
+    
+    addCheckResult("Komplementer gráfok legenerálva.", true);
+}
+
 // Teljes törlés funkció
 function fullClear() {
     if (confirm("Biztosan törölni akarod mindkét gráfot?")) {
@@ -222,10 +235,13 @@ function addCheckResult(text, isSuccess) {
 
 function checkIsomorphism() {
     openResult();
+    generateComplements();
     const isPotentiallyIsomorphic = 
         checkVertexCount() && 
         checkEdgeCount() && 
         checkComponentCount() &&
+        checkComplementEdgeCount() && 
+        checkComplementComponentCount() &&
         checkDegreeSequence() &&
         checkEccentricitySequence() &&
         checkAdvancedSignature();
@@ -269,7 +285,7 @@ function startBruteForce() {
             let mappingStr = Object.entries(mapping)
                 .map(([a, b]) => `<strong>${a}</strong>→${b}`)
                 .join(', ');
-            addCheckResult(`Brute Force sikeres leképezés: ${mappingStr}`, true);
+            addCheckResult(`Sikeres leképezés: ${mappingStr}`, true);
         } else {
             verdictElement.innerHTML = "EREDMÉNY: BIZTOSAN NEM IZOMORF ❌";
             verdictElement.className = "result-error";
