@@ -14,12 +14,17 @@ function setMode(newMode) {
 
 
 function backToMenu() {
+    // 1. Minden adatot alaphelyzetbe állítunk (ezt már jól csináltad)
     resetEverything();
 
+    // 2. Megjelenítjük a főmenüt
     document.getElementById('main-menu').style.display = 'flex';
-    document.getElementById('rajzolo-page').style.display = 'none';
     
-    // Elrejtés
+    // 3. ELREJTJÜK az összes többi oldalt (fontos, hogy az izomorf-page is itt legyen!)
+    document.getElementById('rajzolo-page').style.display = 'none';
+    document.getElementById('izomorf-page').style.display = 'none';
+    
+    // 4. A fejlécben lévő Vissza gombot is elrejtjük
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) backBtn.style.display = 'none';
 }

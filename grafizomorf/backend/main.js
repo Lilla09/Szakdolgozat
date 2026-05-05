@@ -9,6 +9,7 @@ let graphB = new Graph();
 //komplemenet gráfok tárolására szolgáló változók
 let complementA = null;
 let complementB = null;
+let cyLib1, cyLib2;
 
 function openSection(type) {
     document.getElementById('main-menu').style.display = 'none';
@@ -23,6 +24,10 @@ function openSection(type) {
             cy2 = createGraph('cy2', '#5bc0de', '#2aabd2', 'B');
         }
     }
+    else if (type === 'izomorf') {
+            document.getElementById('izomorf-page').style.display = 'block';
+            initLevelButtons(); // Legenerálja a feladatokat
+        }
 }
 
 function createGraph(containerId, nodeColor, edgeColor, counterPrefix) {
@@ -159,3 +164,40 @@ function generateComplements() {
     addCheckResult("Komplementer gráfok legenerálva.", true);
 }
 
+function openIzomorfArchive() {
+    // Navigáció
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('rajzolo-page').style.display = 'none';
+    document.getElementById('izomorf-page').style.display = 'block';
+
+    if (!cyLib1 || !cyLib2) {
+        // Inicializálás ugyanazzal a stílussal, mint az első oldalon
+        cyLib1 = createReadOnlyGraph('cy-lib-1', '#60c670'); 
+        cyLib2 = createReadOnlyGraph('cy-lib-2', '#5bc0de');
+    }
+}
+
+function createReadOnlyGraph(containerId, nodeColor) {
+    return cytoscape({
+        container: document.getElementById(containerId),
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'background-color': nodeColor,
+                    'label': 'data(id)',
+                    'text-valign': 'center',
+                    'color': '#fff'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'curve-style': 'bezier'
+                }
+            }
+        ],
+    });
+}

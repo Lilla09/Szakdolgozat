@@ -96,12 +96,14 @@ function checkEccentricitySequence() {
     const strB = eccB.length > 0 ? eccB.join(', ') : "üres";
 
     if (identical) {
-        addCheckResult(`Átmérő-sorozat egyezik:<br>` + `<strong>A:</strong> <small>${strA}</small><br>` +
+        addCheckResult(`Átmérő-sorozat egyezik:<br>` + 
+            `<strong>A:</strong> <small>${strA}</small><br>` +
             `<strong>B:</strong> <small>${strB}</small>`, true);
         return true;
     } else {
         // Itt látszani fog, ha a listák hossza vagy elemei eltérnek
-        addCheckResult(`Átmérő-sorozat eltér!` + `<strong>A:</strong> <small>${strA}</small><br>` +
+        addCheckResult(`Átmérő-sorozat eltér!` + 
+            `<strong>A:</strong> <small>${strA}</small><br>` +
             `<strong>B:</strong> <small>${strB}</small>`, false);
         return false;
     }

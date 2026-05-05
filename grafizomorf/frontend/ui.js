@@ -1,4 +1,4 @@
-
+let fileExamples = []; // Ebben tároljuk a beolvasott fájlok tartalmát
 
 // Ablak megnyitása
 function openInfo() {
@@ -36,7 +36,6 @@ function checkIsomorphism() {
         checkVertexCount() && 
         checkEdgeCount() && 
         checkComponentCount() &&
-        checkComplementEdgeCount() && 
         checkComplementComponentCount() &&
         checkDegreeSequence() &&
         checkEccentricitySequence() &&
@@ -90,3 +89,70 @@ function startBruteForce() {
     }, 150);
 }
 
+function initLevelButtons() {
+    const listDiv = document.getElementById('example-list');
+    listDiv.innerHTML = ''; 
+
+    levelData.forEach((data, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'tool-btn'; 
+        btn.style.width = "100%";
+        btn.style.marginBottom = "8px";
+        btn.style.textAlign = "left";
+        btn.innerText = `🔥 ${index + 1}. Feladat`;
+        
+        btn.onclick = () => loadLevel(index);
+        listDiv.appendChild(btn);
+    });
+}
+
+function loadLevel(index) {
+    const rawText = levelData[index];
+    // Tisztítás: kiszedjük az üres sorokat és a felesleges szóközöket
+    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    const n = parseInt(lines[0]);
+    const matrixA = lines.slice(1, n + 1);
+    const matrixB = lines.slice(n + 1, 2 * n + 1);
+
+    graphA.clear();
+    graphB.clear();
+    
+    if (!cyLib1 || !cyLib2) {
+        // Létrehozzuk a Cytoscape példányokat, ha még nincsenek
+        cyLib1 = createReadOnlyGraph('cy-lib-1', '#60c670');
+        cyLib2 = createReadOnlyGraph('cy-lib-2', '#5bc0de');
+    }
+
+    fillFromMatrix(cyLib1, graphA, matrixA, 'A');
+    fillFromMatrix(cyLib2, graphB, matrixB, 'B');
+
+    // Elrendezés körben
+    cyLib1.layout({ name: 'circle', padding: 30 }).run();
+    cyLib2.layout({ name: 'circle', padding: 30 }).run();
+}
+
+function fillFromMatrix(cy, model, matrix, prefix) {
+    cy.elements().remove();
+    const n = matrix.length;
+
+    for (let i = 0; i < n; i++) {
+        const id = `${prefix}${i + 1}`;
+        model.addVertex(id);
+        cy.add({ group: 'nodes', data: { id: id } });
+    }
+
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+            if (matrix[i][j] === '1') {
+                const s = `${prefix}${i + 1}`;
+                const t = `${prefix}${j + 1}`;
+                model.addEdge(s, t);
+                cy.add({
+                    group: 'edges',
+                    data: { id: s + '-' + t, source: s, target: t }
+                });
+            }
+        }
+    }
+}

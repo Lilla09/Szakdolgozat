@@ -46,6 +46,32 @@
             </div>
 </section>
 
+<section id="izomorf-page" style="display:none;">
+    <div class="archive-layout" style="display: flex; gap: 20px; padding: 20px; height: 80vh;">
+        <!-- Bal oldali feladatválasztó -->
+        <aside class="example-sidebar" style="width: 250px; overflow-y: auto; background: #fff; padding: 15px; border: 2px solid #461f50; border-radius: 10px;">
+            <h3 style="color: #461f50; border-bottom: 2px solid #461f50; padding-bottom: 5px;">Feladatok</h3>
+            <div id="example-list">
+                <!-- A gombok ide fognak legenerálódni -->
+            </div>
+            <hr>
+            <button class="tool-btn check-btn" style="width: 100%;" onclick="checkIsomorphism()">Ellenőrzés</button>
+        </aside>
+
+        <!-- Gráfok megjelenítése -->
+        <div class="editor-container" style="flex-grow: 1; display: flex; gap: 10px;"> 
+            <div class="graph-panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="panel-header" style="background: #60c670; color: white; padding: 5px; text-align: center;">"A" Gráf</div>
+                <div id="cy-lib-1" style="flex-grow: 1; border: 1px solid #ccc; background: white;"></div>
+            </div>
+            <div class="graph-panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="panel-header" style="background: #5bc0de; color: white; padding: 5px; text-align: center;">"B" Gráf</div>
+                <div id="cy-lib-2" style="flex-grow: 1; border: 1px solid #ccc; background: white;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
     <div id="infoModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeInfo()">&times;</span>
@@ -75,8 +101,9 @@
 
     <script src="../backend/graph.js"></script>
     <script src="../backend/izomorfizm.js"></script>
-    <script src="main.js"></script>
+    <script src="../backend/main.js"></script>
     <script src="events.js"></script>
+    <script src="../backend/feladatok.js"></script>
     <script src="ui.js"></script> 
     
 
