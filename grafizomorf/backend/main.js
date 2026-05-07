@@ -185,7 +185,10 @@ function createReadOnlyGraph(containerId, nodeColor) {
                 selector: 'node',
                 style: {
                     'background-color': nodeColor,
-                    'label': 'data(id)',
+                    'label': function(node) {
+                        // Ha van label adat, azt írja ki, ha nincs, az ID-t
+                        return node.data('label') || node.data('id');
+                    },
                     'text-valign': 'center',
                     'color': '#fff'
                 }

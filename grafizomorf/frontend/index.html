@@ -47,26 +47,26 @@
 </section>
 
 <section id="izomorf-page" style="display:none;">
-    <div class="archive-layout" style="display: flex; gap: 20px; padding: 20px; height: 80vh;">
-        <!-- Bal oldali feladatválasztó -->
-        <aside class="example-sidebar" style="width: 250px; overflow-y: auto; background: #fff; padding: 15px; border: 2px solid #461f50; border-radius: 10px;">
-            <h3 style="color: #461f50; border-bottom: 2px solid #461f50; padding-bottom: 5px;">Feladatok</h3>
-            <div id="example-list">
-                <!-- A gombok ide fognak legenerálódni -->
-            </div>
+    <div class="archive-layout">
+        <aside class="example-sidebar">
+            <h3>Feladatok</h3>
+            <div id="example-list"></div>
             <hr>
-            <button class="tool-btn check-btn" style="width: 100%;" onclick="checkIsomorphism()">Ellenőrzés</button>
+            <button id="btn-start-labeling" class="tool-btn labeling-start-btn full-width mb-5" onclick="startManualLabeling()">Címkézés indítása</button>
+            <button id="btn-check-labels" class="tool-btn labeling-check-btn full-width mb-5 hidden" onclick="checkManualLabels()">Címkézés ellenőrzése</button>
+            <button id="btn-complement" class="tool-btn complement-btn full-width mb-5" onclick="toggleComplement()">Komplementerek mutatása</button>
+            <button class="tool-btn original-names-btn full-width mb-5" onclick="showOriginalLabels()">Eredeti nevek mutatása</button>
+            <button class="tool-btn check-btn full-width mb-5" onclick="checkIsomorphism()">Gyors Ellenőrzés</button>
         </aside>
 
-        <!-- Gráfok megjelenítése -->
-        <div class="editor-container" style="flex-grow: 1; display: flex; gap: 10px;"> 
-            <div class="graph-panel" style="flex: 1; display: flex; flex-direction: column;">
-                <div class="panel-header" style="background: #60c670; color: white; padding: 5px; text-align: center;">"A" Gráf</div>
-                <div id="cy-lib-1" style="flex-grow: 1; border: 1px solid #ccc; background: white;"></div>
+        <div class="editor-container"> 
+            <div class="graph-panel">
+                <div class="panel-header header-a">"A" Gráf</div>
+                <div id="cy-lib-1" class="cy-canvas"></div>
             </div>
-            <div class="graph-panel" style="flex: 1; display: flex; flex-direction: column;">
-                <div class="panel-header" style="background: #5bc0de; color: white; padding: 5px; text-align: center;">"B" Gráf</div>
-                <div id="cy-lib-2" style="flex-grow: 1; border: 1px solid #ccc; background: white;"></div>
+            <div class="graph-panel">
+                <div class="panel-header header-b">"B" Gráf</div>
+                <div id="cy-lib-2" class="cy-canvas"></div>
             </div>
         </div>
     </div>
@@ -95,6 +95,16 @@
             <button id="btn-brute-force" class="tool-btn check-btn" onclick="startBruteForce()">
                 Biztosra akarom tudni (visszalépéses keresés)
             </button>
+        </div>
+    </div>
+</div>
+<div id="labelModal" class="modal">
+    <div class="modal-content label-modal-content">
+        <h3 id="labelModalTitle">Címkézés</h3>
+        <select id="labelSelector"></select>
+        <div class="modal-actions">
+            <button class="tool-btn check-btn" onclick="saveLabel()">Mentés</button>
+            <button class="tool-btn" onclick="closeLabelModal()">Mégse</button>
         </div>
     </div>
 </div>

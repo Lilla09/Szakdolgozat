@@ -176,14 +176,19 @@ body {
  }
 
  .tool-btn.check-btn {
-    background-color: #461f50;
+    background-color: #974990;
     border: 1px solid #000000;
     color: white;
     border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 20px;
-    width: auto;
+    font-size: 18px;
+    width: fill-available;
     cursor: pointer;
+ }
+
+ .tool-btn.check-btn:hover {
+    background-color: #461f50;
+    color: white;
+    border: none;  
  }
 
  /* Az eredményjelző ablak egyedi stílusa */
@@ -219,4 +224,107 @@ body {
 .result-success { color: #28a745; }
 .result-error { color: #dc3545; }
 
+
+/* --- Izomorf oldal elrendezése --- */
+.archive-layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: 80vh;
+}
+
+.example-sidebar {
+    width: 250px;
+    overflow-y: auto;
+    background: #fff;
+    padding: 15px;
+    border: 2px solid #461f50;
+    border-radius: 10px;
+}
+
+.example-sidebar h3 {
+    color: #461f50;
+    margin-top: 0;
+}
+
+.editor-container {
+    flex-grow: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.graph-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.header-a { background-color: #60c670; }
+.header-b { background-color: #5bc0de; }
+
+.cy-canvas {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    background: white;
+}
+
+/* --- Segédosztályok (Utility) --- */
+.full-width { width: 100%; }
+.mb-5 { margin-bottom: 5px; }
+.hidden { display: none; }
+
+/* --- Egyedi gomb színek --- */
+.labeling-start-btn { background-color: #5bc0de; color: white; font-size: 18px;}
+.labeling-check-btn { background-color: #40b285; color: white; font-size: 18px;}
+.original-names-btn { background-color: #227892; color: white; font-size: 18px; }
+.complement-btn { background-color: #17a996; color: white; font-size: 18px;}
+
+.original-names-btn:hover {
+    background-color: #461f50;
+    color: white;
+    border: none;  
+}
+.labeling-start-btn:hover {
+    background-color: #461f50;
+    color: white;
+    border: none;  
+}  
+.labeling-check-btn:hover {
+    background-color: #461f50;
+    color: white;
+    border: none;  
+}
+.complement-btn:hover {
+    background-color: #461f50;
+    color: white;
+    border: none;  
+}
+
+/* --- Címkéző Modal egyedi stílusa --- */
+.label-modal-content {
+    max-width: 300px;
+    text-align: center;
+}
+
+#labelSelector {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
 
