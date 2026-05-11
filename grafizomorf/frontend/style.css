@@ -54,17 +54,6 @@ body {
     padding: 10px;
 }
 
-.graph-box {
-    flex: 1; /* Ez felezi el a teret */
-    background: white;
-    border: 2px solid #ccc;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.label { background: #ccc; text-align: center; padding: 5px; font-weight: bold; color: #461f50; }
-
 #cy1, #cy2 { flex-grow: 1; width: 100%; }
 
 .menu-btn {
@@ -260,6 +249,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    border: #000000 1px solid;
 }
 
 .panel-header {
