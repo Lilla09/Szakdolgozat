@@ -182,28 +182,33 @@ function fillFromMatrix(cy, model, matrix, prefix) {
     }
 }
 function startManualLabeling() {
-    if (!cyLib2 || cyLib2.nodes().length === 0) {
-        alert("Előbb tölts be egy feladatot!");
-        return;
-    }
+    if (!cyLib2) return;
 
-    originalLabelsB = {};
     cyLib2.nodes().forEach(node => {
-        originalLabelsB[node.id()] = node.id();
-        node.data('label', '?');
+        const id = node.id(); // Ez pl. "B1"
+        node.data('match', null); // Töröljük a korábbi párosítást
+        node.data('displayLabel', id); // A felirat kezdetben csak "B1"
     });
 
-    cyLib2.style().selector('node').style('label', 'data(label)').update();
+    // Beállítjuk a stílust, hogy a 'displayLabel' mezőt mutassa
+    cyLib2.style()
+        .selector('node')
+        .style({
+            'label': 'data(displayLabel)',
+            'text-valign': 'center',
+            'color': '#000000',
+            'font-size': '12px'
+        })
+        .update();
 
-    // Eseménykezelő: a prompt helyett most a modal nyílik meg
-    cyLib2.off('tap', 'node'); // Megelőzzük a többszörös regisztrációt
+    // Kattintás kezelő a Modal megnyitásához
+    cyLib2.unbind('tap');
     cyLib2.on('tap', 'node', function(evt) {
         currentTargetNode = evt.target;
-        openLabelModal();
+        openLabelModal(); // Megnyitja a középső ablakot a listával
     });
 
     document.getElementById('btn-check-labels').style.display = 'block';
-    document.getElementById('btn-start-labeling').innerText = 'Reset (Újrakezdés)';
 }
 
 function populateSelector() {
@@ -238,9 +243,21 @@ function openLabelModal() {
 }
 
 function saveLabel() {
-    const val = document.getElementById('labelSelector').value;
-    if (val && currentTargetNode) {
-        currentTargetNode.data('label', val);
+    const selector = document.getElementById('labelSelector');
+    const selectedA = selector.value; // Pl. "A1"
+
+    if (selectedA && currentTargetNode) {
+        const originalB = currentTargetNode.id(); // Pl. "B1"
+        
+        // Eltároljuk a tippedet a háttérben
+        currentTargetNode.data('match', selectedA);
+        
+        // A felirat mostantól ez lesz: "B1 (A1)"
+        currentTargetNode.data('displayLabel', `${originalB} (${selectedA})`);
+        
+        // Frissítjük a nézetet
+        cyLib2.style().selector('node').style('label', 'data(displayLabel)').update();
+        
         closeLabelModal();
     }
 }
@@ -256,26 +273,82 @@ function checkManualLabels() {
     let allFilled = true;
 
     nodesB.forEach(node => {
-        const label = node.data('label');
-        if (label === '?') allFilled = false;
-        userMapping[node.id()] = label;
+        const matchingA = node.data('match');
+        if (!matchingA) allFilled = false;
+        userMapping[node.id()] = matchingA;
     });
 
     if (!allFilled) {
-        alert("Kérlek, minden csúcsot címkézz fel, mielőtt ellenőriznéd!");
+        alert("❌ Hiba: Még nem párosítottál össze minden csúcsot!");
         return;
     }
 
-    // A korábban megírt verifyMapping logikája
-    if (verifyMapping(graphA, graphB, userMapping)) {
-        alert("✅ TÖKÉLETES! Hibátlan izomorf leképezés.");
+    const result = verifyMappingWithFeedback(graphA, graphB, userMapping);
+
+    if (result.isCorrect) {
+        alert("✅ GRATULÁLOK! Helyes párosítás!");
         cyLib2.nodes().style('background-color', '#28a745');
     } else {
-        alert("❌ SAJNOS NEM JÓ! A szomszédsági viszonyok nem egyeznek meg.");
-        cyLib2.nodes().style('background-color', '#dc3545');
+        // Most az üzenet pl. "B1 és B2 között..." érthető lesz, 
+        // mert látod a képernyőn a B1 és B2 feliratú csúcsokat!
+        alert("❌ ROSSZ PÁROSÍTÁS!\n\nIndoklás: " + result.reason);
     }
 }
 
+function verifyMappingWithFeedback(gA, gB, mapping) {
+    const nodesB = Array.from(gB.adjacencyList.keys());
+    const mappedValues = Object.values(mapping);
+
+    // 1. Duplikáció ellenőrzése
+    const uniqueValues = new Set(mappedValues);
+    if (uniqueValues.size !== mappedValues.length) {
+        return { 
+            isCorrect: false, 
+            reason: "Több csúcshoz is ugyanazt az 'A' gráfbeli nevet rendelted hozzá!" 
+        };
+    }
+
+    // 2. Élszerkezet ellenőrzése (ez a lényeg)
+    for (let i = 0; i < nodesB.length; i++) {
+        for (let j = i + 1; j < nodesB.length; j++) {
+            const uB = nodesB[i];
+            const vB = nodesB[j];
+            
+            const uA = mapping[uB];
+            const vA = mapping[vB];
+
+            const edgeInB = gB.adjacencyList.get(uB).includes(vB);
+            const edgeInA = gA.adjacencyList.get(uA).includes(vA);
+
+            if (edgeInB && !edgeInA) {
+                return { 
+                    isCorrect: false, 
+                    reason: `A ${uB} és ${vB} pontok között van él, de az általad választott ${uA} és ${vA} között az 'A' gráfban NINCS él.` 
+                };
+            }
+            
+            if (!edgeInB && edgeInA) {
+                return { 
+                    isCorrect: false, 
+                    reason: `A ${uB} és ${vB} pontok között nincs él, de az általad választott ${uA} és ${vA} között az 'A' gráfban VAN él.` 
+                };
+            }
+        }
+    }
+
+    // 3. Fokszám ellenőrzés (opcionális segítő üzenet)
+    for (let uB of nodesB) {
+        const uA = mapping[uB];
+        if (gB.adjacencyList.get(uB).length !== gA.adjacencyList.get(uA).length) {
+            return {
+                isCorrect: false,
+                reason: `A ${uB} csúcs fokszáma ${gB.adjacencyList.get(uB).length}, de a hozzárendelt ${uA} csúcsé ${gA.adjacencyList.get(uA).length}. Ennek egyeznie kell!`
+            };
+        }
+    }
+
+    return { isCorrect: true };
+}
 // Segédfüggvény, ami ellenőrzi, hogy a felhasználó tippjei szerint az élek stimmelnek-e
 function verifyMapping(gA, gB, mapping) {
     const nodesB = Array.from(gB.adjacencyList.keys());
