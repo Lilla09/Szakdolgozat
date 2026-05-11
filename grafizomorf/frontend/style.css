@@ -162,17 +162,19 @@ body {
     padding: 8px 14px;
     cursor: pointer;
     border-radius: 10px;
+    border:#000000 1px solid;
 }
 
 .tool-btn.active {
     background-color: #4f0348;
     color: white;
-    border: none;
+    border:#000000 1px solid;
+
 }
  .tool-btn:hover {
     background-color: #974990;
     color: white;
-    border: none;  
+    border:#000000 1px solid;  
  }
 
  .tool-btn.check-btn {
@@ -245,6 +247,7 @@ body {
 .example-sidebar h3 {
     color: #461f50;
     margin-top: 0;
+    
 }
 
 .editor-container {
@@ -281,30 +284,30 @@ body {
 .hidden { display: none; }
 
 /* --- Egyedi gomb színek --- */
-.labeling-start-btn { background-color: #5bc0de; color: white; font-size: 18px;}
-.labeling-check-btn { background-color: #40b285; color: white; font-size: 18px;}
-.original-names-btn { background-color: #227892; color: white; font-size: 18px; }
-.complement-btn { background-color: #17a996; color: white; font-size: 18px;}
+.labeling-start-btn { background-color: #5bc0de; color: white; font-size: 18px; border:#000000 1px solid;}
+.labeling-check-btn { background-color: #40b285; color: white; font-size: 18px; border:#000000 1px solid;}
+.original-names-btn { background-color: #227892; color: white; font-size: 18px; border:#000000 1px solid;}
+.complement-btn { background-color: #17a996; color: white; font-size: 18px; border:#000000 1px solid;}
 
 .original-names-btn:hover {
     background-color: #461f50;
     color: white;
-    border: none;  
+    border:#000000 1px solid;
 }
 .labeling-start-btn:hover {
     background-color: #461f50;
     color: white;
-    border: none;  
+    border:#000000 1px solid; 
 }  
 .labeling-check-btn:hover {
     background-color: #461f50;
     color: white;
-    border: none;  
+    border:#000000 1px solid; 
 }
 .complement-btn:hover {
     background-color: #461f50;
     color: white;
-    border: none;  
+    border:#000000 1px solid; 
 }
 
 /* --- Címkéző Modal egyedi stílusa --- */
