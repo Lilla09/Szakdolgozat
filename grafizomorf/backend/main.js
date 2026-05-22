@@ -120,12 +120,11 @@ cy.on('tap', function(evt) {
                         // 1. Megkeressük, melyik matematikai modellhez tartozik
                         let currentGraphModel = (counterPrefix === 'A') ? graphA : graphB;
 
-                        // 2. ELŐSZÖR a matematikát próbáljuk meg frissíteni
-                        // Az addEdge true-t ad, ha még nincs ott az él, és false-t, ha már létezik
+                        //sikerült truet ad vissza, ha az él még nem létezik
                         const sikerult = currentGraphModel.addEdge(sourceId, targetId);
 
                         if (sikerult) {
-                            // 3. CSAK AKKOR rajzoljuk le, ha a matematika engedte
+                            //csak akkor vesszük fel az élt ha a matematikai modellbe sikeresen felvettük
                             cy.add({
                                 group: 'edges',
                                 data: { 
