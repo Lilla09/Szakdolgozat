@@ -107,7 +107,6 @@ class Graph {
     }
     return count;
 }
-// graph.js - add a Graph osztályhoz
 
 getEccentricitySequence() {
     const eccentricities = [];
@@ -142,7 +141,6 @@ getEccentricitySequence() {
     return eccentricities.sort((a, b) => b - a);
 }
 
-// graph.js
 
 getAdvancedDegreeSignature(maxDegreeGlobal) {
     const allSignatures = [];
