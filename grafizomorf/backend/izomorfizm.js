@@ -166,6 +166,7 @@ function checkAdvancedSignature() {
     }
 
 //végső ellenörzés: visszalépéses keresés a lehetséges leképezések között
+// Végső ellenörzés: visszalépéses keresés a lehetséges leképezések között
 function isIsomorphicOptimized(g1, g2) {
     const nodes1 = Array.from(g1.adjacencyList.keys());
     const nodes2 = Array.from(g2.adjacencyList.keys());
@@ -173,17 +174,34 @@ function isIsomorphicOptimized(g1, g2) {
 
     if (n === 0) return {};
 
-    // 1. Ujjlenyomatok lekérése minden csúcshoz
+    // 1. Globális maximális fokszám meghatározása az ujjlenyomathoz
     const degSeqA = g1.getDegreeSequence();
     const degSeqB = g2.getDegreeSequence();
     const globalMax = Math.max(0, ...degSeqA, ...degSeqB);
 
-    // Készítünk egy segédfüggvényt, ami egy csúcs ujjlenyomatát stringgé alakítja
-    const getSig = (graph, v) => JSON.stringify(graph.getVertexSignature(v, globalMax));
+    // Készítünk egy belső segédfüggvényt, ami pontosan egy ADOTT csúcsra (v)
+    // számolja ki a te getAdvancedDegreeSignature logikádat!
+    const getAdvancedVertexSig = (graph, v) => {
+        const ownDegree = graph.getDegree(v);
+        const neighbors = graph.adjacencyList.get(v) || [];
+        
+        // Létrehozzuk a [saját_fok, 1_fokú_szomszédok, ...] tömböt
+        let signature = new Array(globalMax + 1).fill(0);
+        signature[0] = ownDegree;
 
-    // Előre kiszámoljuk az ujjlenyomatokat, hogy ne a ciklusban kelljen
-    const sigs1 = new Map(nodes1.map(v => [v, getSig(g1, v)]));
-    const sigs2 = new Map(nodes2.map(v => [v, getSig(g2, v)]));
+        for (let neighborId of neighbors) {
+            const nDegree = graph.getDegree(neighborId);
+            if (nDegree <= globalMax) {
+                signature[nDegree]++;
+            }
+        }
+        // Stringgé alakítjuk, hogy könnyen összehasonlítható legyen (===)
+        return JSON.stringify(signature);
+    };
+
+    // Előre kiszámoljuk a fejlett ujjlenyomatokat minden csúcshoz
+    const sigs1 = new Map(nodes1.map(v => [v, getAdvancedVertexSig(g1, v)]));
+    const sigs2 = new Map(nodes2.map(v => [v, getAdvancedVertexSig(g2, v)]));
 
     let mapping = new Map();
     let usedInG2 = new Set();
@@ -196,12 +214,10 @@ function isIsomorphicOptimized(g1, g2) {
         const sigU = sigs1.get(u);
 
         for (const v of nodes2) {
-            // OPTIMALIZÁLÁS: Csak akkor próbáljuk meg, ha:
-            // - v még nincs használva
-            // - v ujjlenyomata megegyezik u ujjlenyomatával
+            // OPTIMALIZÁLÁS: Csak akkor próbáljuk, ha a FEJLETT ujjlenyomat egyezik!
             if (!usedInG2.has(v) && sigs2.get(v) === sigU) {
                 
-                // Ellenőrizzük az éleket a már leképezett csúcsokkal (Adjacency check)
+                // Élszerkezet ellenőrzése a már leképezett csúcsokkal
                 let canMap = true;
                 for (let i = 0; i < index; i++) {
                     const prevU = nodes1[i];

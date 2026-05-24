@@ -161,7 +161,6 @@ getAdvancedDegreeSignature(maxDegreeGlobal) {
             const nDegree = this.getDegree(neighborId);
             // Ha a szomszéd fokszáma nDegree, akkor a signature[nDegree] helyen növeljük
             // (Mivel a signature[0] a saját fok, a szomszédokat a fokszámuknak megfelelő indexre tesszük)
-            // Megjegyzés: Ha a 2. elem az 1-fokú szomszéd, akkor az index eltolás: signature[nDegree]
             if (nDegree <= maxDegreeGlobal) {
                 signature[nDegree]++;
             }
@@ -169,7 +168,7 @@ getAdvancedDegreeSignature(maxDegreeGlobal) {
         allSignatures.push(signature);
     }
 
-    // Lexikografikus rendezés: [3, 1, 0, 2] előrébb van mint [3, 1, 1, 0]
+    // Lexikografikus rendezés
     return allSignatures.sort((a, b) => {
         for (let i = 0; i < a.length; i++) {
             if (a[i] !== b[i]) return a[i] - b[i];
