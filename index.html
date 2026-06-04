@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráf Izomorfizmus</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    
+
+</head>
+<body>
+    <header class="main-header">
+        <h1>Gráfizomorfizmus</h1>
+        
+        <div class="header-actions">
+            <button id="header-back-btn" class="header-btn" onclick="backToMenu()" style="display: none;">Vissza</button>
+            <span class="header-btn" onclick="openInfo()">Info</span>
+        </div>
+    </header>
+
+    <main class="menu-container" id="main-menu">
+        <button class="menu-btn" onclick="openSection('rajzolo')">Gráfok rajzolása</button>
+        <button class="menu-btn" onclick="openSection('izomorf')">Izomorf-e?</button>
+    </main>
+
+ <section id="rajzolo-page" style="display:none;">
+    
+    <div class="toolbar">
+    <button id="btn-node" class="tool-btn" onclick="setMode('node')">Csúcs felvétele</button>
+    <button id="btn-edge" class="tool-btn" onclick="setMode('edge')">Él felvétele</button>
+    <button id="btn-delete" class="tool-btn" onclick="setMode('delete')">Törlés</button>
+    <button class="tool-btn clear-all" onclick="fullClear()">Teljes törlés</button>
+    <button class="tool-btn check-btn" onclick="checkIsomorphism()">Izomorfak?</button>
+</div>
+    <div class="workspace">
+            <div class="graph-panel">
+                <div class="panel-header header-a">"A" Gráf</div>
+                <div id="cy1"></div>
+            </div>
+            <div class="graph-panel">
+                <div class="panel-header header-b">"B" Gráf</div>
+                <div id="cy2"></div>
+            </div>
+</section>
+
+<section id="izomorf-page" style="display:none;">
+    <div class="archive-layout">
+        <aside class="example-sidebar">
+            <h3>Feladatok</h3>
+            <div id="example-list"></div>
+            <hr>
+            <button id="btn-start-labeling" class="tool-btn labeling-start-btn full-width mb-5" onclick="startManualLabeling()">Címkézés indítása</button>
+            <button id="btn-check-labels" class="tool-btn labeling-check-btn full-width mb-5 hidden" onclick="checkManualLabels()">Címkézés ellenőrzése</button>
+            <button id="btn-complement" class="tool-btn complement-btn full-width mb-5" onclick="toggleComplement()">Komplementerek mutatása</button>
+            <button class="tool-btn original-names-btn full-width mb-5" onclick="showOriginalLabels()">Eredeti nevek mutatása</button>
+            <button class="tool-btn check-btn full-width mb-5" onclick="checkIsomorphism()">Gyors Ellenőrzés</button>
+        </aside>
+
+        <div class="editor-container"> 
+            <div class="graph-panel">
+                <div class="panel-header header-a">"A" Gráf</div>
+                <div id="cy-lib-1" class="cy-canvas"></div>
+            </div>
+            <div class="graph-panel">
+                <div class="panel-header header-b">"B" Gráf</div>
+                <div id="cy-lib-2" class="cy-canvas"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeInfo()">&times;</span>
+            <h2>Használati útmutató</h2>
+            <div class="info-text">
+                <p><strong>Gráfok rajzolása:</strong> Kattints a fehér területre új pontok lerakásához.</p>
+                <p><strong>Izomorf-e?:</strong> Két gráf szerkezeti azonosságának vizsgálata.</p>
+            </div>
+        </div>
+    </div>
+
+<div id="resultModal" class="modal">
+    <div class="modal-content result-content">
+        <span class="close" onclick="closeResult()">&times;</span>
+        <h2>Izomorfizmus Vizsgálat</h2>
+        <hr>
+        <ul id="check-list"></ul>
+        <div id="final-verdict"></div>
+        
+        <div id="brute-force-container" style="text-align: center; margin-top: 20px; display: none;">
+            <button id="btn-brute-force" class="tool-btn check-btn" onclick="startBruteForce()">
+                Biztosra akarom tudni (visszalépéses keresés)
+            </button>
+        </div>
+    </div>
+</div>
+<div id="labelModal" class="modal">
+    <div class="modal-content label-modal-content">
+        <h3 id="labelModalTitle">Címkézés</h3>
+        <select id="labelSelector"></select>
+        <div class="modal-actions">
+            <button class="tool-btn check-btn" onclick="saveLabel()">Mentés</button>
+            <button class="tool-btn" onclick="closeLabelModal()">Mégse</button>
+        </div>
+    </div>
+</div>
+
+    <script src="../backend/graph.js"></script>
+    <script src="../backend/izomorfizm.js"></script>
+    <script src="../backend/main.js"></script>
+    <script src="events.js"></script>
+    <script src="../backend/feladatok.js"></script>
+    <script src="ui.js"></script> 
+    
+
+</body>
+</html>
