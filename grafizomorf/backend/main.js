@@ -98,10 +98,10 @@ cy.on('tap', function(evt) {
                 const id = target.id();
                 
                 if (target.isNode()) {
-                    // MATEMATIKAI törlés az új függvénnyel
+                    // MATEMATIKAI törlés
                     currentGraphModel.removeVertex(id);
                     } else {
-                        // MATEMATIKAI törlés (él esetén kiolvassuk a forrást és a célt)
+                        // MATEMATIKAI törlés
                         const s = target.data('source');
                         const t = target.data('target');
                         currentGraphModel.removeEdge(s, t);
@@ -156,7 +156,7 @@ function generateComplements() {
     complementA = graphA.getComplement();
     complementB = graphB.getComplement();
     
-    // Opcionális: Kiírhatjuk a konzolra, hogy lássuk az eredményt
+
     console.log("Komplementer A éleinek száma:", complementA.size);
     console.log("Komplementer B éleinek száma:", complementB.size);
     
@@ -170,7 +170,6 @@ function openIzomorfArchive() {
     document.getElementById('izomorf-page').style.display = 'block';
 
     if (!cyLib1 || !cyLib2) {
-        // Inicializálás ugyanazzal a stílussal, mint az első oldalon
         cyLib1 = createReadOnlyGraph('cy-lib-1', '#60c670'); 
         cyLib2 = createReadOnlyGraph('cy-lib-2', '#5bc0de');
     }
@@ -185,7 +184,6 @@ function createReadOnlyGraph(containerId, nodeColor) {
                 style: {
                     'background-color': nodeColor,
                     'label': function(node) {
-                        // Ha van label adat, azt írja ki, ha nincs, az ID-t
                         return node.data('label') || node.data('id');
                     },
                     'text-valign': 'center',

@@ -81,28 +81,25 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.6); /* Sötétített háttér */
-    backdrop-filter: blur(5px); /* Modern elhomályosítás */
+    backdrop-filter: blur(5px); 
 }
 
 /* A fehér doboz középen */
 .modal-content {
     background-color: white;
-    /* A 10% margin helyett középre igazítjuk fixen */
     margin: 5vh auto; 
     padding: 30px;
     border: 3px solid #4f0348;
-    width: 90%; /* Mobilon is jobban néz ki */
+    width: 90%;
     max-width: 650px;
     border-radius: 15px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 
-    /* --- EZ A LÉNYEG --- */
-    max-height: 85vh;    /* A képernyő magasságának max 85%-a lehet */
-    overflow-y: auto;    /* Ha ennél nagyobb, megjelenik a belső görgetősáv */
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
-/* Egy kis extra, hogy a görgetősáv elegánsabb legyen */
 .modal-content::-webkit-scrollbar {
     width: 8px;
 }
@@ -182,9 +179,9 @@ body {
     border: none;  
  }
 
- /* Az eredményjelző ablak egyedi stílusa */
+
 .result-content {
-    max-width: 500px; /* Ne legyen túl széles az ablak */
+    max-width: 500px;
     text-align: left;
 }
 
@@ -211,7 +208,7 @@ body {
     border-radius: 0 0 10px 10px;
 }
 
-/* Külön osztályok a színeknek, amiket a JS fog használni */
+
 .result-success { color: #28a745; }
 .result-error { color: #dc3545; }
 
@@ -268,12 +265,11 @@ body {
     background: white;
 }
 
-/* --- Segédosztályok (Utility) --- */
+
 .full-width { width: 100%; }
 .mb-5 { margin-bottom: 5px; }
 .hidden { display: none; }
 
-/* --- Egyedi gomb színek --- */
 .labeling-start-btn { background-color: #5bc0de; color: white; font-size: 18px; border:#000000 1px solid;}
 .labeling-check-btn { background-color: #40b285; color: white; font-size: 18px; border:#000000 1px solid;}
 .original-names-btn { background-color: #227892; color: white; font-size: 18px; border:#000000 1px solid;}
@@ -300,7 +296,6 @@ body {
     border:#000000 1px solid; 
 }
 
-/* --- Címkéző Modal egyedi stílusa --- */
 .label-modal-content {
     max-width: 300px;
     text-align: center;

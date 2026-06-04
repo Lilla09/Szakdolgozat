@@ -14,7 +14,7 @@ class Graph {
         return false;
     }
 
-    // Új él hozzáadása (irányítatlan gráf esetén mindkét irányba)
+    //új él hozzáadása két csúcs között
     addEdge(v1, v2) {
         if (this.adjacencyList.has(v1) && this.adjacencyList.has(v2)) {
             // Megelőzzük a dupla éleket
@@ -62,7 +62,7 @@ class Graph {
         for (let neighbors of this.adjacencyList.values()) {
             count += neighbors.length;
         }
-        return count / 2; // Irányítatlan gráfnál minden élet kétszer számoltunk
+        return count / 2;
     }
 
     // Egy csúcs fokszámának lekérdezése
@@ -70,7 +70,7 @@ class Graph {
         return this.adjacencyList.has(vertex) ? this.adjacencyList.get(vertex).length : 0;
     }
 
-    // Fokszám-sorozat előállítása (izomorfizmus vizsgálathoz elengedhetetlen)
+    // Fokszám-sorozat előállítása
     getDegreeSequence() {
         return Array.from(this.adjacencyList.values())
             .map(neighbors => neighbors.length)

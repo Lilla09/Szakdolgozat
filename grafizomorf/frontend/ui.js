@@ -22,7 +22,6 @@ function closeResult() {
     document.getElementById('resultModal').style.display = 'none';
 }
 
-// Ezt a függvényt fogják hívni az ellenőrzéseid
 function addCheckResult(text, isSuccess) {
     const list = document.getElementById('check-list');
     const icon = isSuccess ? "✅" : "❌";
@@ -49,7 +48,7 @@ function checkIsomorphism() {
     if (isPotentiallyIsomorphic) {
         verdictElement.innerHTML = "EREDMÉNY: LEHETSÉGESEN IZOMORF";
         verdictElement.className = "result-success";
-        bruteContainer.style.display = "block"; // Megmutatjuk a gombot
+        bruteContainer.style.display = "block";
     } else {
         verdictElement.innerHTML = "EREDMÉNY: NEM IZOMORF";
         verdictElement.className = "result-error";
@@ -121,7 +120,6 @@ function showOriginalLabels() {
     alert("Most az eredeti neveket látod. A címkézés folytatásához kattints újra a 'Címkézés indítása' gombra!");
 }
 
-// JAVÍTOTT BETÖLTÉS: Hogy feladatváltáskor minden alaphelyzetbe álljon
 function loadLevel(index) {
     const rawText = levelData[index];
     const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -141,10 +139,8 @@ function loadLevel(index) {
     fillFromMatrix(cyLib1, graphA, matrixA, 'A');
     fillFromMatrix(cyLib2, graphB, matrixB, 'B');
 
-    // FONTOS: Feladatváltáskor kényszerítsük a rendes ID-k megjelenítését
     cyLib2.style().selector('node').style('label', 'data(id)').update();
     
-    // Elrejtjük az ellenőrző gombot, amíg el nem kezdik az új címkézést
     document.getElementById('btn-check-labels').style.display = 'none';
     document.getElementById('btn-start-labeling').innerText = 'Címkézés indítása';
 
@@ -185,12 +181,11 @@ function startManualLabeling() {
     if (!cyLib2) return;
 
     cyLib2.nodes().forEach(node => {
-        const id = node.id(); // Ez pl. "B1"
+        const id = node.id();
         node.data('match', null); // Töröljük a korábbi párosítást
-        node.data('displayLabel', id); // A felirat kezdetben csak "B1"
+        node.data('displayLabel', id);
     });
 
-    // Beállítjuk a stílust, hogy a 'displayLabel' mezőt mutassa
     cyLib2.style()
         .selector('node')
         .style({
@@ -244,15 +239,14 @@ function openLabelModal() {
 
 function saveLabel() {
     const selector = document.getElementById('labelSelector');
-    const selectedA = selector.value; // Pl. "A1"
+    const selectedA = selector.value;
 
     if (selectedA && currentTargetNode) {
-        const originalB = currentTargetNode.id(); // Pl. "B1"
+        const originalB = currentTargetNode.id();
         
-        // Eltároljuk a tippedet a háttérben
+        // Eltároljuk a tippeket a csúcshoz, hogy később ellenőrizni tudjuk
         currentTargetNode.data('match', selectedA);
         
-        // A felirat mostantól ez lesz: "B1 (A1)"
         currentTargetNode.data('displayLabel', `${originalB} (${selectedA})`);
         
         // Frissítjük a nézetet
@@ -289,8 +283,6 @@ function checkManualLabels() {
         alert("✅ GRATULÁLOK! Helyes párosítás!");
         cyLib2.nodes().style('background-color', '#28a745');
     } else {
-        // Most az üzenet pl. "B1 és B2 között..." érthető lesz, 
-        // mert látod a képernyőn a B1 és B2 feliratú csúcsokat!
         alert("❌ ROSSZ PÁROSÍTÁS!\n\nIndoklás: " + result.reason);
     }
 }
@@ -308,7 +300,7 @@ function verifyMappingWithFeedback(gA, gB, mapping) {
         };
     }
 
-    // 2. Élszerkezet ellenőrzése (ez a lényeg)
+    // 2. Élszerkezet ellenőrzése
     for (let i = 0; i < nodesB.length; i++) {
         for (let j = i + 1; j < nodesB.length; j++) {
             const uB = nodesB[i];
@@ -336,7 +328,7 @@ function verifyMappingWithFeedback(gA, gB, mapping) {
         }
     }
 
-    // 3. Fokszám ellenőrzés (opcionális segítő üzenet)
+    // 3. Fokszám ellenőrzés 
     for (let uB of nodesB) {
         const uA = mapping[uB];
         if (gB.adjacencyList.get(uB).length !== gA.adjacencyList.get(uA).length) {

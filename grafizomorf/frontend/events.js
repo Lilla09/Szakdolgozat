@@ -14,13 +14,12 @@ function setMode(newMode) {
 
 
 function backToMenu() {
-    // 1. Minden adatot alaphelyzetbe állítunk (ezt már jól csináltad)
     resetEverything();
 
     // 2. Megjelenítjük a főmenüt
     document.getElementById('main-menu').style.display = 'flex';
     
-    // 3. ELREJTJÜK az összes többi oldalt (fontos, hogy az izomorf-page is itt legyen!)
+    // 3. ELREJTJÜK az összes többi oldalt
     document.getElementById('rajzolo-page').style.display = 'none';
     document.getElementById('izomorf-page').style.display = 'none';
     
@@ -36,12 +35,12 @@ function fullClear() {
         if (cy1) cy1.elements().remove();
         if (cy2) cy2.elements().remove();
 
-        // 2. MATEMATIKAI törlés (A Graph osztály clear metódusával)
+        // 2. MATEMATIKAI törlés 
         graphA.clear();
         graphB.clear();
 
         // 3. Számlálók alaphelyzetbe állítása
-        // Így a következő pont megint A1 és B1 lesz, nem pedig ott folytatódik, ahol abbahagytad
+        // Így a következő pont megint A1 és B1 lesz
         nodeCountA = 1;
         nodeCountB = 1;
 

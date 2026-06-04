@@ -70,11 +70,9 @@ function checkDegreeSequence() {
     const seqA = graphA.getDegreeSequence();
     const seqB = graphB.getDegreeSequence();
 
-    // Szebben néz ki a listában, ha látjuk is a számokat
     const strA = seqA.length > 0 ? seqA.join(', ') : "üres";
     const strB = seqB.length > 0 ? seqB.join(', ') : "üres";
 
-    // Tömbök összehasonlítása JS-ben legegyszerűbben stringként vagy JSON-ként
     if (JSON.stringify(seqA) === JSON.stringify(seqB)) {
         addCheckResult(`Fokszámsorozat egyezik:<br>` + `<strong>A:</strong> <small>${strA}</small><br>` + `<strong>B:</strong> <small>${strB}</small>`, true);
         return true;
@@ -166,7 +164,6 @@ function checkAdvancedSignature() {
     }
 
 //végső ellenörzés: visszalépéses keresés a lehetséges leképezések között
-// Végső ellenörzés: visszalépéses keresés a lehetséges leképezések között
 function isIsomorphicOptimized(g1, g2) {
     const nodes1 = Array.from(g1.adjacencyList.keys());
     const nodes2 = Array.from(g2.adjacencyList.keys());
@@ -179,13 +176,12 @@ function isIsomorphicOptimized(g1, g2) {
     const degSeqB = g2.getDegreeSequence();
     const globalMax = Math.max(0, ...degSeqA, ...degSeqB);
 
-    // Készítünk egy belső segédfüggvényt, ami pontosan egy ADOTT csúcsra (v)
-    // számolja ki a te getAdvancedDegreeSignature logikádat!
+
+
     const getAdvancedVertexSig = (graph, v) => {
         const ownDegree = graph.getDegree(v);
         const neighbors = graph.adjacencyList.get(v) || [];
         
-        // Létrehozzuk a [saját_fok, 1_fokú_szomszédok, ...] tömböt
         let signature = new Array(globalMax + 1).fill(0);
         signature[0] = ownDegree;
 
@@ -195,11 +191,10 @@ function isIsomorphicOptimized(g1, g2) {
                 signature[nDegree]++;
             }
         }
-        // Stringgé alakítjuk, hogy könnyen összehasonlítható legyen (===)
+    
         return JSON.stringify(signature);
     };
 
-    // Előre kiszámoljuk a fejlett ujjlenyomatokat minden csúcshoz
     const sigs1 = new Map(nodes1.map(v => [v, getAdvancedVertexSig(g1, v)]));
     const sigs2 = new Map(nodes2.map(v => [v, getAdvancedVertexSig(g2, v)]));
 
