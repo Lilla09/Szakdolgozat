@@ -160,7 +160,6 @@ function generateComplements() {
     console.log("Komplementer A éleinek száma:", complementA.size);
     console.log("Komplementer B éleinek száma:", complementB.size);
     
-    addCheckResult("Komplementer gráfok legenerálva.", true);
 }
 
 function openIzomorfArchive() {
